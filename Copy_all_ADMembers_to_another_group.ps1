@@ -33,7 +33,7 @@ foreach ($member in $sourceMembers) {
         Add-ADGroupMember -Identity $destGroup -Members $member.SamAccountName -ErrorAction Stop
         Write-Host "Added $($member.SamAccountName) to $destGroup"
     } catch {
-        Write-Host "Error adding $($member.SamAccountName) to $destGroup: $_" -ForegroundColor Red
+        Write-Host "Error adding $($member.SamAccountName) to $destGroup`: $($_.Exception.Message)" -ForegroundColor Red
     }
 }
 
