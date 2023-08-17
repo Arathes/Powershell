@@ -41,7 +41,7 @@ foreach ($member in $members) {
 if ($emails.Count -eq 0) {
     Write-Host "No email addresses found for members of $group." -ForegroundColor Yellow
 } else {
-    Write-Host "Email addresses for members of $group:" -ForegroundColor Green
+    Write-Host "Email addresses for members of $group`:" -ForegroundColor Green
     $emails | ForEach-Object {
         Write-Host $_
     }
