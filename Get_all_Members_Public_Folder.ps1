@@ -7,7 +7,7 @@ function Get-ADGroupMembersRecursive {
         [Parameter(Mandatory = $true)]
         [string]$GroupName
     )
-    
+
     $groupMembers = Get-ADGroupMember -Identity $GroupName -Recursive
     return $groupMembers
 }
@@ -32,14 +32,20 @@ foreach ($permission in $permissions) {
     $object = Get-ADObject -Filter {Name -eq $identity} -Properties objectClass
     if ($object.objectClass -eq 'group') {
         $groupMembers = Get-ADGroupMembersRecursive -GroupName $object.DistinguishedName
-        $userList += $groupMembers | Select-Object -ExpandProperty SamAccountName
+        foreach ($member in $groupMembers) {
+            $userInfo = Get-ADUser $member -Properties DisplayName
+            $userList += [PSCustomObject]@{ Username = $userInfo.SamAccountName; FullName = $userInfo.DisplayName }
+        }
     }
     else {
-        $userList += $identity
+        $userInfo = Get-ADUser -Filter { DisplayName -eq $identity } -Properties DisplayName
+        if ($userInfo) {
+            $userList += [PSCustomObject]@{ Username = $userInfo.SamAccountName; FullName = $userInfo.DisplayName }
+        }
     }
 }
 
 # Export the user list to CSV
-$userList | Select-Object @{Name='Username'; Expression={$_}} | Export-Csv -Path "${publicFolder}_Permissions.csv" -NoTypeInformation
+$userList | Select-Object Username, FullName | Export-Csv -Path "${publicFolder}_Permissions.csv" -NoTypeInformation
 
 Write-Host "Exported to ${publicFolder}_Permissions.csv"
