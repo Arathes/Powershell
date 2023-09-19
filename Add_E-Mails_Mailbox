@@ -1,0 +1,27 @@
+# Written for Migration from Public Folder to Shared Mailbox
+# Faster change for the addresses and to keep track of the former addresses
+
+# Initialize variables
+$sharedMailbox = "SharedMailboxName" # Replace with the name of the shared mailbox
+
+# Email addresses to add
+$primaryAddress = "primary@example.com" # Replace with the primary email address
+$secondaryAddress = "secondary@example.com" # Replace or leave empty to skip
+$altPrimaryAddress1 = "alt1@otherdomain.com" # Replace or leave empty to skip
+$altPrimaryAddress2 = "alt2@otherdomain.com" # Replace or leave empty to skip
+
+# Retrieve the existing email addresses for the mailbox
+$existingAddresses = (Get-Mailbox $sharedMailbox).EmailAddresses
+
+# Add the primary SMTP address (This will automatically replace the existing primary address)
+$existingAddresses += "SMTP:$primaryAddress"
+
+# Add optional addresses as secondary (or tertiary etc.) addresses
+if ($secondaryAddress) { $existingAddresses += "smtp:$secondaryAddress" }
+if ($altPrimaryAddress1) { $existingAddresses += "smtp:$altPrimaryAddress1" }
+if ($altPrimaryAddress2) { $existingAddresses += "smtp:$altPrimaryAddress2" }
+
+# Update the mailbox with the new set of email addresses
+Set-Mailbox -Identity $sharedMailbox -EmailAddresses $existingAddresses
+
+Write-Host "Email addresses have been updated for the shared mailbox: $sharedMailbox"
