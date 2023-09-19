@@ -1,3 +1,12 @@
+# Import necessary modules if required
+# Import-Module Exchange
+# Import-Module ActiveDirectory
+
+# Setup your Exchange session if remote (uncomment if needed)
+# $UserCredential = Get-Credential
+# $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://<ExchangeServerFQDN>/PowerShell/ -Authentication Kerberos -Credential $UserCredential
+# Import-PSSession $Session -DisableNameChecking
+
 # Initialize variables
 $domain = "example.com" # Replace with your domain
 $typeofdepartment = "DeptType" # Replace with the type of department
@@ -22,5 +31,8 @@ foreach ($department in $departments) {
     # Output status to the console
     Write-Host "Commands executed for department: $department"
 }
+
+# Uncomment to remove the session if you created one
+# Remove-PSSession $Session
 
 Write-Host "Script execution complete."
